@@ -41,12 +41,17 @@ class Duck(ABC):
         self.__fly_behavior = fly_behavior
         self.__quack_behavior = quack_behavior
     
-    @abstractmethod
     def display(self):
-        ...
-        
+        print(self.__class__.__name__, 'says hello')
+    
+    def set_fly_behavior(self, fly_behavior:FlyBehavior):
+        self.__fly_behavior = fly_behavior
+    
     def fly(self):
         self.__fly_behavior.fly()
+        
+    def set_quack_behavior(self, quack_behavior:QuackBehavior):
+        self.__quack_behavior = quack_behavior
         
     def quack(self):
         self.__quack_behavior.quack()
@@ -56,33 +61,28 @@ class GreenDuck(Duck):
     
     def __init__(self):
         super().__init__(fly_behavior=FlyToTheMoon, quack_behavior=QuackQuack())
-
-    def display(self):
-        print('Greenduck says hello')
     
 class MallardDuck(Duck):
 
     def __init__(self):
         super().__init__(fly_behavior=FlyBackward, quack_behavior=SmallQuack())
 
-    def display(self):
-        print('MallardDuck says hello')
-
 class OtherDuck(Duck):
 
     def __init__(self):
         super().__init__(fly_behavior=FlyToTheMoon, quack_behavior=SmallQuack())
-    
-    def display(self):
-        print('OtherDuck says hello')
 
 if __name__ == '__main__':
     green_duck = GreenDuck()
     green_duck.display()
     green_duck.fly()
     green_duck.quack()
+    green_duck.set_fly_behavior(FlyBackward)
+    green_duck.fly()
     
     mallard = MallardDuck()
     mallard.display()
     mallard.fly()
+    mallard.quack()
+    mallard.set_quack_behavior(QuackQuack())
     mallard.quack()
