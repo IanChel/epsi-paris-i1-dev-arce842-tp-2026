@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 class Observer(ABC):
     
     @abstractmethod
-    def notify(self, weather_station):
+    def notify(self, subject):
         ...
     
 
@@ -39,14 +39,27 @@ class MaxPressureDisplay(Observer):
             self.__max_pressure = pressure
         print(f'Max pressure: {self.__max_pressure}')
 
-class WeatherStation:
+class Subject(ABC):
+    
+    @abstractmethod
+    def add_observer(self, observer:Observer):
+        ...
+        
+    @abstractmethod
+    def remove_observer(self, observer:Observer):
+        ...
+
+class WeatherStation(Subject):
     
     def __init__(self):
         self.__displays = []
         
-    def add_display(self, display:Observer):
+    def add_observer(self, display:Observer):
         if isinstance(display, Observer):
             self.__displays.append(display)
+    
+    def remove_observer(self, observer:Observer):
+        self.__displays.remove(observer)
     
     def __get_temperature(self):
         return random.randint(-50, 50)
@@ -88,9 +101,9 @@ class WeatherStation:
         
 if __name__ == '__main__':
     weather_station = WeatherStation()
-    weather_station.add_display(StatsDisplay())
-    weather_station.add_display(AverageTempDisplay())
-    weather_station.add_display(MaxPressureDisplay())
+    weather_station.add_observer(StatsDisplay())
+    weather_station.add_observer(AverageTempDisplay())
+    weather_station.add_observer(MaxPressureDisplay())
     
     for _ in range(1):
         print(datetime.datetime.now())
