@@ -5,21 +5,7 @@ from abc import ABC, abstractmethod
 
 class Beverage(ABC):
     
-    def __init__(self):
-        self.milk = None
-        self.sugar = None
-        self.cookies = None
 
-        
-    def add_milk(self):
-        self.milk = Milk()
-        
-    def add_sugar(self):
-        self.sugar = Sugar()
-        
-    def add_cookies(self):
-        self.cookies = Cookies()
-    
     def cost(self):
         total_cost = 0
         if self.milk:
@@ -32,103 +18,109 @@ class Beverage(ABC):
 
 # base cost: 1        
 class Coffee(Beverage):
-    
-    def __init__(self):
-        super().__init__()
-        self.coffee_bean = None
-    
-    def add_coffee_bean(self):
-        self.coffee_bean = CoffeeBean()
-    
+
     def cost(self):
-        total_cost = 1.0 + super().cost()
-        if self.coffee_bean:
-            total_cost += self.coffee_bean.cost()
-        return total_cost
+        return 1.0
 
 # base cost: 1.5    
 class Tea(Beverage):
 
-    def __init__(self):
-        super().__init__()
-        
+
     def cost(self):
-        total_cost = 1.5 + super().cost()
-        return total_cost
+        return 1.5
         
 # base cost: 0.7
 class Chocolate(Beverage):
     
-    def __init__(self):
-        super().__init__()
-        self.sha = None
-
-    def add_sha(self):
-        self.sha = Sha()
-
     def cost(self):
-        total_cost = 0.7 + super().cost()
-        if self.sha:
-            total_cost += self.sha.cost()
-        return total_cost
+        return 0.7
 
 # base cost: 2.0    
 class Latte(Beverage):
 
-    def __init__(self):
-        super().__init__()
-        self.sha = None
-
-    def add_sha(self):
-        self.sha = Sha()
-
     def cost(self):
-        total_cost = 2.0 + super().cost()
-        if self.sha:
-            total_cost += self.sha.cost()
-        return total_cost    
+        return 2.0    
 
-class Condiment(ABC):
+class Condiment(Beverage):
     
-    @abstractmethod
+    def __init__(self, beverage):
+        super().__init__()
+        self.beverage = beverage
+    
     def cost(self):
-        ...
+        return self.beverage.cost()
         
 class Sugar(Condiment):
     
+    def __init__(self, beverage):
+        super().__init__(beverage)
+    
     def cost(self):
-        return 0.4
+        return 0.4 + self.beverage.cost()
     
 class Milk(Condiment):
+
+    def __init__(self, beverage):
+        super().__init__(beverage)
+
     
     def cost(self):
-        return 0.5
+        return 0.5 + self.beverage.cost()
     
 class Cookies(Condiment):
+
+    def __init__(self, beverage):
+        super().__init__(beverage)
+
     
     def cost(self):
-        return 0.64
+        return 0.64 + self.beverage.cost()
 
 class CoffeeBean(Condiment):
+
+    def __init__(self, beverage):
+        super().__init__(beverage)
+
     
     def cost(self):
-        return 0.2
+        return 0.2 + self.beverage.cost()
     
 class Sha(Condiment):
+
+    def __init__(self, beverage):
+        super().__init__(beverage)
     
     def cost(self):
-        return 0.5
+        return 0.5 + self.beverage.cost()
+
+class Cloud(Condiment):
+    
+    def __init__(self, beverage):
+        super().__init__(beverage)
+    
+    def cost(self):
+        return 12.3 + self.beverage.cost()
+    
 
 if __name__ == '__main__':
-    c = Coffee()
-    print(f'Coffee dark {c.cost()}')
-    c.add_sugar()
-    print(f'Coffee sugar {c.cost()}')
-    tea = Tea()
-    tea.add_milk()
-    print(f'Tea light {tea.cost()}')
+    # c = Coffee()
+    # print(f'Coffee dark {c.cost()}')
+    # c.add_sugar()
+    # print(f'Coffee sugar {c.cost()}')
+    # tea = Tea()
+    # tea.add_milk()
+    # print(f'Tea light {tea.cost()}')
     
     # nouvelle version
     
-    c = Milk(Sugar(Coffee()))
-    print(f'Coffee milk sugar {c.cost()}')
+    # Decorator
+    dark_coffee = Coffee()
+    print(f'Dark Coffee {dark_coffee.cost()}')
+    
+    c = Sugar(Cloud(Coffee()))
+    #type (Sugar(Coffee)) == type(Coffee)
+    print(f'Coffee cloud sugar {c.cost()}')
+    
+    t = Sugar(Milk(Tea()))
+    print(f'Tea milk sugar {t.cost()}')
+
